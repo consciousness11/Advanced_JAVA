@@ -1,5 +1,10 @@
 package UI;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import javax.swing.*;
 
 public class StudentRegistration extends JFrame {
@@ -46,8 +51,50 @@ public class StudentRegistration extends JFrame {
 		add(rollTxt);
 		
 		addBtn= new JButton("Add");
-		addBtn.setBounds(200, 200, 75,30);
+		addBtn.setBounds(100, 200, 75,30);
 		add(addBtn);
+		addBtn.addActionListener((event)-> {
+			JOptionPane.showMessageDialog(this, "Data from database fetched !");
+			this.showData();
+		});
+	
+		delBtn = new JButton("Delete");
+		delBtn.setBounds(200, 200, 75, 30);
+		add(delBtn);
+		
+	}
+	
+	public void showData() {
+		Connection con;
+		PreparedStatement pst;
+		  ResultSet rs;
+		  
+		  String fname=null;
+		  String lname=null;
+		  int id=0;
+		  int roll=0;
+		  int marks=0;
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/studentreg","root","");
+			pst = con.prepareStatement("select * from registration");
+			rs = pst.executeQuery();
+			 while(rs.next()){
+		         fname = rs.getString("first_name");
+		         lname = rs.getString("last_name");
+		         id = rs.getInt("id");
+		         roll = rs.getInt("roll");
+		        marks=rs.getInt("marks");
+			 }
+			 this.fNameTxt.setText(fname);
+			 this.lNameTxt.setText(lname);
+			 this.rollTxt.setText(Integer.toString(roll));
+			
+		}
+		catch(Exception e) {
+			
+			
+		}
 		
 	}
 	
